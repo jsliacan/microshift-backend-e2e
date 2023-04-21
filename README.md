@@ -1,2 +1,53 @@
 # microshift-backend-e2e
 A wrapper on top of MicroShift upstream e2e tests to be run mostly on non linux environments with a MicroShift cluster
+
+## Overview
+
+The container is based on [deliverest](https://github.com/adrianriobo/deliverest), which handles the remote execution.
+
+## Usage
+
+`PWD` should contain `id_rsa` and `pull-secret`.
+
+### Windows amd64
+
+For debug purposes (e.g. when run outside of the sanitized environment ensured by the pipeline), use `--pull=always` policy for `podman run`. Otherwise you might end up running an old local image instead of pulling a fresh one.
+
+```bash
+TARGET_FOLDER=ms-backend-e2e
+USER=crcqe
+HOST=windows-crcqe.tpb.lab.eng.brq.redhat.com
+PULL_SECRET_FILE="C:/Users/crcqe/crc-pull-secret"
+BUNDLE_PATH="C:/Users/crcqe/crc_microshift_hyperv_4.12.13_amd64.crcbundle"
+
+podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
+    -e TARGET_HOST=$HOST \
+    -e TARGET_HOST_USERNAME=$USER \
+    -e TARGET_HOST_KEY_PATH=/data/id_rsa \
+    -e PULL_SECRET_FILE=/data/pull-secret \
+    -e HOOK_SCRIPT=/hooks/assets.sh \
+    -e TARGET_FOLDER=${TARGET_FOLDER} \
+    -e TARGET_RESULTS=junit/junit*.xml \
+    -e OUTPUT_FOLDER=/data \
+    -v $PWD:/data:z \
+    quay.io/rhqp/microshift-backend-e2e:v4.12.13-windows-amd64 \
+        ms-backend-e2e/run.ps1 \
+            -targetFolder ${TARGET_FOLDER} \
+            -junitResultsPath ${TARGET_FOLDER}/junit \
+            -pullSecretFile ${PULL_SECRET_FILE} \
+            -bundlePath ${BUNDLE_PATH}
+```
+
+### darwin amd64
+
+```bash
+TARGET_FOLDER=ms-backend-e2e
+podman run -d --name microshift-backend-e2e \
+    -v $PWD:/data:z \
+    -e TARGET_HOST=$(cat host) \
+    -e TARGET_HOST_USERNAME=$(cat username) \
+    -e TARGET_HOST_KEY_PATH=/data/id_rsa \
+    -e OUTPUT_FOLDER=/data \
+    -e TARGET_FOLDER=ms-backend-e2e \
+    quay.io/rhqp/microshift-backend-e2e:darwin-amd64 ms-backend-e2e/run.sh
+```

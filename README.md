@@ -1,5 +1,5 @@
 # microshift-backend-e2e
-A wrapper on top of MicroShift upstream e2e tests to be run mostly on non linux environments with a MicroShift cluster
+A wrapper on top of MicroShift upstream e2e tests to be run on hosts with a running MicroShift cluster.
 
 ## Overview
 
@@ -21,8 +21,8 @@ PULL_SECRET_FILE="C:/Users/crcqe/crc-pull-secret"
 BUNDLE_PATH="C:/Users/crcqe/crc_microshift_hyperv_4.12.13_amd64.crcbundle"
 
 podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
-    -e TARGET_HOST=$HOST \
-    -e TARGET_HOST_USERNAME=$USER \
+    -e TARGET_HOST=${HOST} \
+    -e TARGET_HOST_USERNAME=${USER} \
     -e TARGET_HOST_KEY_PATH=/data/id_rsa \
     -e PULL_SECRET_FILE=/data/pull-secret \
     -e HOOK_SCRIPT=/hooks/assets.sh \
@@ -42,12 +42,25 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
 
 ```bash
 TARGET_FOLDER=ms-backend-e2e
-podman run -d --name microshift-backend-e2e \
-    -v $PWD:/data:z \
-    -e TARGET_HOST=$(cat host) \
-    -e TARGET_HOST_USERNAME=$(cat username) \
+USER=crcqe
+HOST=macmini-crcqe-1.tpb.lab.eng.brq.redhat.com
+PULL_SECRET_FILE="/Users/${USER}/Downloads/pull-secret"
+BUNDLE_PATH="/Users/${USER}/Downloads/crc_microshift_vfkit_4.12.13_amd64.crcbundle"
+
+podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
+    -e TARGET_HOST=${HOST} \
+    -e TARGET_HOST_USERNAME=${USER} \
     -e TARGET_HOST_KEY_PATH=/data/id_rsa \
+    -e PULL_SECRET_FILE=/data/pull-secret \
+    -e HOOK_SCRIPT=/hooks/assets.sh \
+    -e TARGET_FOLDER=${TARGET_FOLDER} \
+    -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \
-    -e TARGET_FOLDER=ms-backend-e2e \
-    quay.io/rhqp/microshift-backend-e2e:darwin-amd64 ms-backend-e2e/run.sh
+    -v $PWD:/data:z \
+    quay.io/rhqp/microshift-backend-e2e:v4.12.13-darwin-amd64 \
+        ms-backend-e2e/run.sh \
+            -t ${TARGET_FOLDER} \
+            -r ${TARGET_FOLDER}/junit \
+            -p ${PULL_SECRET_FILE} \
+            -b ${BUNDLE_PATH}
 ```

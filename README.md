@@ -7,7 +7,7 @@ The container is based on [deliverest](https://github.com/adrianriobo/deliverest
 
 ## Usage
 
-`PWD` should contain `id_rsa` and `pull-secret`.
+`PWD` should contain `id_rsa` (and eventually also `pull-secret`; right now this is assumed to be on the target host already, just like a custom bundle).
 
 ### Windows amd64
 
@@ -60,7 +60,34 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     quay.io/rhqp/microshift-backend-e2e:v4.12.13-darwin-amd64 \
         ms-backend-e2e/run.sh \
             -t ${TARGET_FOLDER} \
-            -r ${TARGET_FOLDER}/junit \
             -p ${PULL_SECRET_FILE} \
+            -r ${TARGET_FOLDER}/junit \
+            -b ${BUNDLE_PATH}
+```
+
+### linux amd64
+
+```bash
+TARGET_FOLDER=ms-backend-e2e
+USER=cloud-user
+HOST=rhel-crcqe.tpb.lab.eng.brq.redhat.com
+PULL_SECRET_FILE="/home/${USER}/Downloads/pull-secret"
+BUNDLE_PATH="/home/${USER}/Downloads/crc_microshift_libvirt_4.12.13_amd64.crcbundle"
+
+podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
+    -e TARGET_HOST=${HOST} \
+    -e TARGET_HOST_USERNAME=${USER} \
+    -e TARGET_HOST_KEY_PATH=/data/id_rsa \
+    -e PULL_SECRET_FILE=/data/pull-secret \
+    -e HOOK_SCRIPT=/hooks/assets.sh \
+    -e TARGET_FOLDER=${TARGET_FOLDER} \
+    -e TARGET_RESULTS=junit/junit*.xml \
+    -e OUTPUT_FOLDER=/data \
+    -v $PWD:/data:z \
+    quay.io/rhqp/microshift-backend-e2e:v4.12.13-linux-amd64 \
+        ms-backend-e2e/run.sh \
+            -t ${TARGET_FOLDER} \
+            -p ${PULL_SECRET_FILE} \
+            -r ${TARGET_FOLDER}/junit \
             -b ${BUNDLE_PATH}
 ```

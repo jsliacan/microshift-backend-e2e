@@ -1,5 +1,6 @@
-FROM docker.io/library/golang:1.18-alpine as builder
+FROM registry.access.redhat.com/ubi8/go-toolset:1.18 as builder
 
+USER root
 ARG OPENSHIFT_VERSION
 ARG OS 
 ARG ARCH
@@ -7,9 +8,11 @@ ARG ARCH
 ENV GOOS=${OS} \
     GOARCH=${ARCH} \
     UPSTREAM=https://github.com/openshift/origin.git \
-    BRANCH=release-${OPENSHIFT_VERSION}
+    BRANCH=release-${OPENSHIFT_VERSION}\
+    EPEL=https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 
-RUN apk add git gcc g++ linux-headers curl \
+RUN rpm -ivh ${EPEL} \ 
+    && dnf --enablerepo=epel install -y git gcc gcc-c++ kernel-headers curl \
     && git clone --depth 1 --branch ${BRANCH} ${UPSTREAM} \
     && cd origin \
     && go build -o ./build/ms-backend-e2e -mod=vendor -trimpath github.com/openshift/origin/cmd/openshift-tests
@@ -23,7 +26,7 @@ LABEL org.opencontainers.image.authors="Adrian Riobo<ariobolo@redhat.com>"
 
 ENV ASSETS_FOLDER /opt/ms-backend-e2e
 
-COPY --from=builder /go/origin/build/ms-backend-e2e /go/kubectl* ${ASSETS_FOLDER}/
+COPY --from=builder /opt/app-root/src/origin/build/ms-backend-e2e /opt/app-root/src/kubectl* ${ASSETS_FOLDER}/
 ARG OS 
 COPY /lib/${OS}/* /lib/common/* ${ASSETS_FOLDER}/
 RUN chmod +x ${ASSETS_FOLDER}/run.* \

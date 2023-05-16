@@ -1,4 +1,4 @@
-OPENSHIFT_VERSION ?= 4.12.13
+OPENSHIFT_VERSION ?= 4.12.15
 CONTAINER_MANAGER ?= podman
 
 # Image URL to use all building/pushing image targets

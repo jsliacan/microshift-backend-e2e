@@ -1,4 +1,5 @@
 # microshift-backend-e2e
+
 A wrapper on top of MicroShift upstream e2e tests to be run on hosts with a running MicroShift cluster.
 
 ## Overview
@@ -18,7 +19,6 @@ TARGET_FOLDER=ms-backend-e2e
 USER=crcqe
 HOST=windows-crcqe.tpb.lab.eng.brq.redhat.com
 PULL_SECRET_FILE="C:/Users/crcqe/crc-pull-secret"
-BUNDLE_PATH="C:/Users/crcqe/crc_microshift_hyperv_4.12.13_amd64.crcbundle"
 
 podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_HOST=${HOST} \
@@ -30,12 +30,14 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \
     -v $PWD:/data:z \
-    quay.io/rhqp/microshift-backend-e2e:v4.12.13-windows-amd64 \
+    quay.io/rhqp/microshift-backend-e2e:v4.12.15-windows-amd64 \
         ms-backend-e2e/run.ps1 \
             -targetFolder ${TARGET_FOLDER} \
             -junitResultsPath ${TARGET_FOLDER}/junit \
             -pullSecretFile ${PULL_SECRET_FILE} \
             -bundlePath ${BUNDLE_PATH}
+
+BUNDLE_PATH="C:/Users/crcqe/OpenshiftLocal/bundle/crc_microshift_hyperv_4.12.15_amd64.crcbundle"
 ```
 
 ### darwin amd64
@@ -45,9 +47,8 @@ TARGET_FOLDER=ms-backend-e2e
 USER=crcqe
 HOST=macmini-crcqe-1.tpb.lab.eng.brq.redhat.com
 PULL_SECRET_FILE="/Users/${USER}/Downloads/pull-secret"
-BUNDLE_PATH="/Users/${USER}/Downloads/crc_microshift_vfkit_4.12.13_amd64.crcbundle"
 
-podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
+podman run --pull=always --network=host --rm -it --name microshift-backend-e2e-darwin \
     -e TARGET_HOST=${HOST} \
     -e TARGET_HOST_USERNAME=${USER} \
     -e TARGET_HOST_KEY_PATH=/data/id_rsa \
@@ -57,12 +58,14 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \
     -v $PWD:/data:z \
-    quay.io/rhqp/microshift-backend-e2e:v4.12.13-darwin-amd64 \
+    quay.io/rhqp/microshift-backend-e2e:v4.12.15-darwin-amd64 \
         ms-backend-e2e/run.sh \
             -t ${TARGET_FOLDER} \
             -p ${PULL_SECRET_FILE} \
             -r ${TARGET_FOLDER}/junit \
             -b ${BUNDLE_PATH}
+
+BUNDLE_PATH="/Users/${USER}/Downloads/crc_microshift_vfkit_4.12.15_amd64.crcbundle"
 ```
 
 ### linux amd64
@@ -72,7 +75,6 @@ TARGET_FOLDER=ms-backend-e2e
 USER=cloud-user
 HOST=rhel-crcqe.tpb.lab.eng.brq.redhat.com
 PULL_SECRET_FILE="/home/${USER}/Downloads/pull-secret"
-BUNDLE_PATH="/home/${USER}/Downloads/crc_microshift_libvirt_4.12.13_amd64.crcbundle"
 
 podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_HOST=${HOST} \
@@ -84,10 +86,12 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \
     -v $PWD:/data:z \
-    quay.io/rhqp/microshift-backend-e2e:v4.12.13-linux-amd64 \
+    quay.io/rhqp/microshift-backend-e2e:v4.12.15-linux-amd64 \
         ms-backend-e2e/run.sh \
             -t ${TARGET_FOLDER} \
             -p ${PULL_SECRET_FILE} \
             -r ${TARGET_FOLDER}/junit \
             -b ${BUNDLE_PATH}
+
+BUNDLE_PATH="/home/${USER}/Downloads/crc_microshift_libvirt_4.12.15_amd64.crcbundle"
 ```

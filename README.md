@@ -30,14 +30,14 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \
     -v $PWD:/data:z \
-    quay.io/rhqp/microshift-backend-e2e:v4.12.15-windows-amd64 \
+    quay.io/rhqp/microshift-backend-e2e:v4.13.0-windows-amd64 \
         ms-backend-e2e/run.ps1 \
             -targetFolder ${TARGET_FOLDER} \
             -junitResultsPath ${TARGET_FOLDER}/junit \
             -pullSecretFile ${PULL_SECRET_FILE} \
             -bundlePath ${BUNDLE_PATH}
 
-BUNDLE_PATH="C:/Users/crcqe/OpenshiftLocal/bundle/crc_microshift_hyperv_4.12.15_amd64.crcbundle"
+BUNDLE_PATH="C:/Users/crcqe/OpenshiftLocal/bundle/crc_microshift_hyperv_4.13.0_amd64.crcbundle"
 ```
 
 ### darwin amd64
@@ -58,14 +58,14 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e-d
     -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \
     -v $PWD:/data:z \
-    quay.io/rhqp/microshift-backend-e2e:v4.12.15-darwin-amd64 \
+    quay.io/rhqp/microshift-backend-e2e:v4.13.0-darwin-amd64 \
         ms-backend-e2e/run.sh \
             -t ${TARGET_FOLDER} \
             -p ${PULL_SECRET_FILE} \
             -r ${TARGET_FOLDER}/junit \
             -b ${BUNDLE_PATH}
 
-BUNDLE_PATH="/Users/${USER}/Downloads/crc_microshift_vfkit_4.12.15_amd64.crcbundle"
+BUNDLE_PATH="/Users/${USER}/Downloads/crc_microshift_vfkit_4.13.0_amd64.crcbundle"
 ```
 
 ### linux amd64
@@ -86,12 +86,12 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \
     -v $PWD:/data:z \
-    quay.io/rhqp/microshift-backend-e2e:v4.12.15-linux-amd64 \
+    quay.io/rhqp/microshift-backend-e2e:v4.13.0-linux-amd64 \
         ms-backend-e2e/run.sh \
             -t ${TARGET_FOLDER} \
             -p ${PULL_SECRET_FILE} \
             -r ${TARGET_FOLDER}/junit \
             -b ${BUNDLE_PATH}
 
-BUNDLE_PATH="/home/${USER}/Downloads/crc_microshift_libvirt_4.12.15_amd64.crcbundle"
+BUNDLE_PATH="/home/${USER}/Downloads/crc_microshift_libvirt_4.13.0_amd64.crcbundle"
 ```

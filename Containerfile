@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/go-toolset:1.18 as builder
+FROM registry.access.redhat.com/ubi9/go-toolset:1.19 as builder
 
 USER root
 ARG OPENSHIFT_VERSION
@@ -12,7 +12,7 @@ ENV GOOS=${OS} \
     EPEL=https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 
 RUN rpm -ivh ${EPEL} \ 
-    && dnf --enablerepo=epel install -y git gcc gcc-c++ kernel-headers curl \
+    && dnf --enablerepo=epel install -y git gcc gcc-c++ kernel-headers \
     && git clone --depth 1 --branch ${BRANCH} ${UPSTREAM} \
     && cd origin \
     && go build -o ./build/ms-backend-e2e -mod=vendor -trimpath github.com/openshift/origin/cmd/openshift-tests

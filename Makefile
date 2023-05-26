@@ -3,6 +3,8 @@ CONTAINER_MANAGER ?= podman
 
 # Image URL to use all building/pushing image targets
 IMG ?= quay.io/rhqp/microshift-backend-e2e:v${OPENSHIFT_VERSION}
+OS ?= $(shell go env GOOS)
+ARCH ?= $(shell go env GOARCH)
 
 # Build the container image
 .PHONY: oci-build

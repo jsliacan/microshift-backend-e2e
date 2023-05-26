@@ -92,3 +92,10 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
             -r ${TARGET_FOLDER}/junit \
             -b ${BUNDLE_PATH}
 ```
+
+## Updating OpenShift version
+
+1. Create a new branch, e.g. `v4.13.0` and add all changes needed alongside this version change.
+2. Merge the branch into `main`. 
+3. Create a tag, e.g. `v4.13.0` and push it to `main` with `git push origin v4.13.0`. 
+4. GH-Actions will trigger a build based on the presence of the new tag and push the new image to quay.io.

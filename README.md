@@ -44,7 +44,7 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
 ```bash
 TARGET_FOLDER=ms-backend-e2e
 USER=crcqe
-HOST=macmini-crcqe-1.tpb.lab.eng.brq.redhat.com
+HOST=macmini-crcqe-2.tpb.lab.eng.brq.redhat.com
 PULL_SECRET_FILE="/Users/${USER}/Downloads/pull-secret"
 BUNDLE_PATH="/Users/${USER}/Downloads/crc_microshift_vfkit_4.13.3_amd64.crcbundle"
 

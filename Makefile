@@ -10,7 +10,7 @@ ARCH ?= $(shell go env GOARCH)
 .PHONY: oci-build
 oci-build:
 # Transform openshift_version to remove Z version number
-	${CONTAINER_MANAGER} build -t ${IMG}-${OS}-${ARCH} -f Containerfile --build-arg=OPENSHIFT_VERSION=$(basename ${OPENSHIFT_VERSION}) --build-arg=OS=${OS} --build-arg=ARCH=${ARCH} .
+	${CONTAINER_MANAGER} build -t ${IMG}-${OS}-${ARCH} -f oci/Containerfile --build-arg=OPENSHIFT_VERSION=$(basename ${OPENSHIFT_VERSION}) --build-arg=OS=${OS} --build-arg=ARCH=${ARCH} oci
 
 # Build the container image
 .PHONY: oci-push

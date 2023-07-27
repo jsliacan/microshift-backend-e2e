@@ -31,5 +31,3 @@ ARG OS
 COPY /lib/${OS}/* /lib/common/* ${ASSETS_FOLDER}/
 RUN chmod +x ${ASSETS_FOLDER}/run.* \
     && chmod +x ${ASSETS_FOLDER}/kubectl*
-COPY /hooks /
-

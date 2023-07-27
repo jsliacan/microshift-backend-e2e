@@ -28,7 +28,6 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_HOST=${HOST} \
     -e TARGET_HOST_USERNAME=${USER} \
     -e TARGET_HOST_KEY_PATH=/data/id_rsa \
-    -e HOOK_SCRIPT=/hooks/assets.sh \
     -e TARGET_FOLDER=${TARGET_FOLDER} \
     -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \
@@ -54,7 +53,6 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e-d
     -e TARGET_HOST=${HOST} \
     -e TARGET_HOST_USERNAME=${USER} \
     -e TARGET_HOST_KEY_PATH=/data/id_rsa \
-    -e HOOK_SCRIPT=/hooks/assets.sh \
     -e TARGET_FOLDER=${TARGET_FOLDER} \
     -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \
@@ -80,7 +78,6 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_HOST=${HOST} \
     -e TARGET_HOST_USERNAME=${USER} \
     -e TARGET_HOST_KEY_PATH=/data/id_rsa \
-    -e HOOK_SCRIPT=/hooks/assets.sh \
     -e TARGET_FOLDER=${TARGET_FOLDER} \
     -e TARGET_RESULTS=junit/junit*.xml \
     -e OUTPUT_FOLDER=/data \

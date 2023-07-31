@@ -24,10 +24,15 @@ FROM quay.io/rhqp/deliverest:v0.0.3
 
 LABEL org.opencontainers.image.authors="Adrian Riobo<ariobolo@redhat.com>"
 
-ENV ASSETS_FOLDER /opt/ms-backend-e2e
+ARG OS 
+ARG ARCH
+
+ENV ASSETS_FOLDER=/opt/ms-backend-e2e \
+    OS=${OS} \
+    ARCH=${ARCH}
 
 COPY --from=builder /opt/app-root/src/origin/build/ms-backend-e2e /opt/app-root/src/kubectl* ${ASSETS_FOLDER}/
-ARG OS 
 COPY /lib/${OS}/* /lib/common/* ${ASSETS_FOLDER}/
+
 RUN chmod +x ${ASSETS_FOLDER}/run.* \
     && chmod +x ${ASSETS_FOLDER}/kubectl*

@@ -22,7 +22,7 @@ For debug purposes (e.g. when run outside of the sanitized environment ensured b
 TARGET_FOLDER=ms-backend-e2e
 USER=crcqe
 HOST=windows-crcqe.tpb.lab.eng.brq.redhat.com
-BUNDLE_PATH="C:/Users/crcqe/Downloads/crc_microshift_hyperv_4.13.4_amd64.crcbundle"
+BUNDLE_PATH="C:/Users/crcqe/Downloads/crc_microshift_hyperv_4.13.6_amd64.crcbundle"
 
 podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_HOST=${HOST} \
@@ -33,7 +33,7 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e OUTPUT_FOLDER=/data \
     -v $PWD:/data:z \
     -v $PWD/pullsecret:/opt/ms-backend-e2e/pullsecret:z \
-    quay.io/rhqp/microshift-backend-e2e:v4.13.4-windows-amd64 \
+    quay.io/rhqp/microshift-backend-e2e:v4.13.6-windows-amd64 \
         ms-backend-e2e/run.ps1 \
             -targetFolder ${TARGET_FOLDER} \
             -junitResultsPath ${TARGET_FOLDER}/junit \
@@ -47,7 +47,7 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
 TARGET_FOLDER=ms-backend-e2e
 USER=crcqe
 HOST=macmini-crcqe-2.tpb.lab.eng.brq.redhat.com
-BUNDLE_PATH="/Users/${USER}/Downloads/crc_microshift_vfkit_4.13.4_amd64.crcbundle"
+BUNDLE_PATH="/Users/${USER}/Downloads/crc_microshift_vfkit_4.13.6_amd64.crcbundle"
 
 podman run --pull=always --network=host --rm -it --name microshift-backend-e2e-darwin \
     -e TARGET_HOST=${HOST} \
@@ -58,7 +58,7 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e-d
     -e OUTPUT_FOLDER=/data \
     -v $PWD:/data:z \
     -v $PWD/pullsecret:/opt/ms-backend-e2e/pullsecret:z \
-    quay.io/rhqp/microshift-backend-e2e:v4.13.4-darwin-amd64 \
+    quay.io/rhqp/microshift-backend-e2e:v4.13.6-darwin-amd64 \
         ms-backend-e2e/run.sh \
             -t ${TARGET_FOLDER} \
             -p ${TARGET_FOLDER}/pullsecret \
@@ -72,7 +72,7 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e-d
 TARGET_FOLDER=ms-backend-e2e
 USER=cloud-user
 HOST=rhel-crcqe.tpb.lab.eng.brq.redhat.com
-BUNDLE_PATH="/home/${USER}/Downloads/crc_microshift_libvirt_4.13.4_amd64.crcbundle"
+BUNDLE_PATH="/home/${USER}/Downloads/crc_microshift_libvirt_4.13.6_amd64.crcbundle"
 
 podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e TARGET_HOST=${HOST} \
@@ -83,7 +83,7 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
     -e OUTPUT_FOLDER=/data \
     -v $PWD:/data:z \
     -v $PWD/pullsecret:/opt/ms-backend-e2e/pullsecret:z \
-    quay.io/rhqp/microshift-backend-e2e:v4.13.4-linux-amd64 \
+    quay.io/rhqp/microshift-backend-e2e:v4.13.6-linux-amd64 \
         ms-backend-e2e/run.sh \
             -t ${TARGET_FOLDER} \
             -p ${TARGET_FOLDER}/pullsecret \
@@ -93,7 +93,7 @@ podman run --pull=always --network=host --rm -it --name microshift-backend-e2e \
 
 ## Updating OpenShift version
 
-1. Create a new branch, e.g. `v4.13.4` and add all changes needed alongside this version change.
+1. Create a new branch, e.g. `v4.13.6` and add all changes needed alongside this version change.
 2. Merge the branch into `main`. 
-3. Create a tag, e.g. `v4.13.4` and push it to `main` with `git push origin v4.13.4`. 
+3. Create a tag, e.g. `v4.13.6` and push it to `main` with `git push origin v4.13.6`. 
 4. GH-Actions will trigger a build based on the presence of the new tag and push the new image to quay.io.

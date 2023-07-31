@@ -1,21 +1,23 @@
 #!/bin/bash
 
-usage="$(basename "$0") [-h] [-t TARGET_FOLDER] [-p PULL_SECRET] [-r RESULTS] [-b BUNDLE]
+usage="$(basename "$0") [-h] [-t TARGET_FOLDER] [-p PULL_SECRET] [-r RESULTS] [-n RESULTS_FILENAME] [-b BUNDLE]
 
 where:
     -h  show this help text
     -t  folder on target host to which assets are copied
     -p  pull-secret file path
     -r  path to junit results folder (optional)
+    -n  junit results filename (optional)
     -b  path to a custom microshift bundle (optional)"
 
 # first : is for invalid option ?, then t: is for flag t that takes an argument, etc.
-while getopts ":ht:p:r:b:" arg; do
+while getopts ":ht:p:r:n:b:" arg; do
   case $arg in
     h) echo "$usage"; exit;;
     t) TARGET_FOLDER=$OPTARG;;
     p) PULL_SECRET=$OPTARG;;
     r) RESULTS_PATH=$OPTARG;;
+    n) RESULTS_FILENAME=$OPTARG;;
     b) BUNDLE=$OPTARG;;
     \?) printf "invalid option: -%s\n" "$OPTARG" >&2; echo "$usage" >&2; exit 1;;
   esac
@@ -57,3 +59,8 @@ echo ${PATH}
 
 echo "running tests..."
 ms-backend-e2e run -v 2 --provider=none -f ${TARGET_FOLDER}/suite.txt -o e2e.log --junit-dir ${RESULTS_PATH}
+mv ${RESULTS_PATH}/junit*.xml ${RESULTS_PATH}/${RESULTS_FILENAME}
+
+echo "cleaning up cluster..."
+crc stop
+crc cleanup

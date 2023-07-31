@@ -5,6 +5,8 @@ param(
     $targetFolder,
     [Parameter(HelpMessage='junit results path')]
     $junitResultsPath="$targetFolder/junit",
+    [Parameter(HelpMessage='junit filename')]
+    $junitFilename="microshift-e2e.xml",
     [Parameter(Mandatory,HelpMessage='pull secret file')]
     $pullSecretFile,
     [Parameter(HelpMessage='bundle path if custom bundle to be used')]
@@ -36,3 +38,8 @@ $env:KUBECONFIG="$env:HOME\.kube\config"
 New-Item -Path $junitResultsPath -ItemType Directory
 $env:PATH="$env:PATH;$env:HOME\$targetFolder;"
 ms-backend-e2e.exe run -v 2 --provider=none -f $targetFolder/suite.txt -o e2e.log --junit-dir $junitResultsPath
+mv $junitResultsPath/junit*.xml $junitResultsPath/$junitFilename
+
+# Clenaup cluster
+crc stop 
+crc cleanup

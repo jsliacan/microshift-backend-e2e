@@ -1,0 +1,161 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: microshift-backend-e2e
+  labels:
+    app.kubernetes.io/version: "4.13.4"
+    redhat.com/product: microshift-backend
+    dev.lifecycle.io/phase: testing
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.24.x"
+    tekton.dev/categories: microshift-backend
+    tekton.dev/tags: microshift-backend, testing
+    tekton.dev/displayName: "testing for podman-backend"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    This task will run qe testing against a microshift backend (e.g. OpenShift Local cluster with podman preset)
+
+    This task makes use of a suite of tests from microshift.
+
+  workspaces:
+  - name: pipelines-data
+  
+  params:
+  # Target host params
+  - name: host
+    description: host to connect to the provisioned machine
+  - name: username
+    description: username to connect to the provisioned machine
+  - name: key
+    description: key file name to connect to the provisioned machine within the workspace resources path   
+  - name: workspace-resources-path
+    description: path on workspace to find resources to connect and managed provisioned machine
+  - name: os
+    description: type of platform per target host (linux, windows, macos)
+    default: windows
+  - name: arch
+    description: type of arch per target host (linux, windows, macos)
+    default: amd64
+
+  # Microshift params
+  - name: bundle-path
+    description: Optional. bundle path on remote host to be used for testing
+    default: "''"
+  - name: crc-secret
+    description: |
+      crc secret name holding the pullsecret. 
+
+      secret should match following format:
+      ---
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: ${secret-name}
+      type: Opaque
+      data:
+        pullsecret: ${pullsecret-value}
+
+  # Result params
+  - name: worspace-qe-subpath
+    description: subpath relative to workspace path where results are stored
+    default: qe-results
+  - name: junit-filename
+    description: junit results filename
+    default: microshift-e2e.xml
+  # Control params
+  - name: debug
+    description: debug purposes extend verbosity on cmds executed on the target
+    default: 'false'
+  - name: cleanup-target
+    description: remove all assets moved into the target host
+    default: 'true'
+
+  results:
+  - name: duration
+    description: total amount of time in seconds for the qe execution
+
+  steps:
+  - name: e2e
+    image: quay.io/rhqp/microshift-backend-e2e:v4.13.4-$(params.os)-$(params.arch)
+    script: |
+      #!/bin/bash
+
+      if [ "$(params.debug)" = "true" ]; then
+        set -xuo 
+      fi
+
+      # Prepare ENVs
+      SECONDS=0
+      DEBUG=$(params.debug)
+      TARGET_HOST=$(params.host)
+      TARGET_HOST_USERNAME=$(params.username)
+      TARGET_HOST_KEY_PATH=$(workspaces.pipelines-data.path)/$(params.workspace-resources-path)/$(params.key)
+      chmod 600 ${TARGET_HOST_KEY_PATH}
+      TARGET_FOLDER=microshift-backend-e2e
+      TARGET_RESULTS="junit/$(params.junit-filename)"
+      TARGET_CLEANUP=$(params.cleanup-target)
+      OUTPUT_FOLDER=$(workspaces.pipelines-data.path)/$(params.workspace-resources-path)/$(params.worspace-qe-subpath)
+      mkdir -p "${OUTPUT_FOLDER}"
+
+      # Copy pull secret to ASSETS folder so it will be copied to target host
+      cp /opt/crc/pullsecret ${ASSETS_FOLDER}
+      
+      # Create command
+      cmd=""
+
+      case "$(params.os)" in
+        windows)
+          cmd="${TARGET_FOLDER}/run.ps1 "
+          cmd="$cmd -targetFolder ${TARGET_FOLDER} "
+          cmd="$cmd -junitResultsPath ${TARGET_FOLDER}/junit "
+          cmd="$cmd -junitFilename $(params.junit-filename) "
+          cmd="$cmd -pullSecretFile ${TARGET_FOLDER}/pullsecret "
+          if [[ $(params.bundle-path) != "" ]]; then
+            cmd="$cmd -bundlePath $(params.bundle-path)"
+            bundlePath
+          fi
+          ;;
+
+        darwin|linux)
+          cmd="${TARGET_FOLDER}/run.sh "
+          cmd="$cmd -t ${TARGET_FOLDER} "
+          cmd="$cmd -p ${TARGET_FOLDER}/pullsecret "
+          cmd="$cmd -r ${TARGET_FOLDER}/junit "
+          cmd="$cmd -n $(params.junit-filename) "
+          if [[ $(params.bundle-path) != "" ]]; then
+            cmd="$cmd -b $(params.bundle-path)"
+          fi
+          ;;
+
+        *)
+          echo "$(params.os) is not supported"
+          exit 1 
+          ;;
+      esac
+      
+      # Exec
+      . entrypoint.sh "${cmd}"
+
+      # Results
+      echo -n "${SECONDS}" | tee $(results.duration.path)
+
+    volumeMounts:
+    - mountPath: /opt/crc
+      name: crc-secret  
+      
+    resources:      
+      requests:
+        memory: "50Mi"
+        cpu: "5m"
+      limits:
+        memory: "70Mi"
+        cpu: "10m"
+
+  volumes:
+  - name: crc-secret
+    secret:
+      secretName: $(params.crc-secret)
+      optional: true
+  
